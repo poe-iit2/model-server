@@ -1,35 +1,9 @@
 import express from 'express';
-import { GraphQLSchema, GraphQLString, GraphQLObjectType } from 'graphql';
 import { createHandler } from 'graphql-http/lib/use/express';
 import { WebSocketServer } from 'ws';
 import { ruruHTML } from 'ruru/server';
 import { useServer } from "graphql-ws/use/ws";
-
-const schema = new GraphQLSchema({
-  query: new GraphQLObjectType({
-    name: 'Query',
-    fields: {
-      hello: {
-        type: GraphQLString,
-        resolve: () => 'world',
-      }
-    }
-  }),
-  subscription: new GraphQLObjectType({
-    name: 'Subscription',
-    fields: {
-      greetings: {
-        type: GraphQLString,
-        subscribe: async function* () {
-          for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
-            yield { greetings: hi };
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-          }
-        },
-      },
-    },
-  }),
-});
+import schema from './schema.mjs'
 
 const app = express();
 

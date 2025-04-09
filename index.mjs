@@ -14,7 +14,21 @@ const schema = new GraphQLSchema({
         resolve: () => 'world',
       }
     }
-  })
+  }),
+  subscription: new GraphQLObjectType({
+    name: 'Subscription',
+    fields: {
+      greetings: {
+        type: GraphQLString,
+        subscribe: async function* () {
+          for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
+            yield { greetings: hi };
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
+        },
+      },
+    },
+  }),
 });
 
 const app = express();
@@ -22,18 +36,12 @@ const app = express();
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// app.get("/", (req, res) => {
-//   res.send({
-//     "message": "Hello World!"
-//   })
-// })
-
 app.use('/graphql', createHandler({schema}));
 
 // Serve the GraphiQL IDE.
 app.get('/', (_req, res) => {
   res.type('html');
-  res.end(ruruHTML({ endpoint: '/graphql' }));
+  res.end(ruruHTML({ endpoint: '/graphql', subscriptionEndpoint: '/' }));
 });
 
 const server = await app.listen(process.env.PORT || 5000);

@@ -80,6 +80,17 @@ const ModelType = new GraphQLObjectType({
   }
 });
 
+const MutationReturnType = new GraphQLObjectType({
+  name: 'MutationReturn',
+  fields: {
+    success: {
+      type: new GraphQLNonNull(GraphQLBoolean),
+      resolve: obj => {
+        return obj.success;
+      }
+    }
+  }
+})
 
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -99,7 +110,7 @@ const schema = new GraphQLSchema({
     name: 'Mutation',
     fields: {
       updateSensors: {
-        type: DeviceType,
+        type: MutationReturnType,
         args: {id: { type: new GraphQLNonNull(GraphQLInt) }, sensors: { type: new GraphQLNonNull(DeviceSensorsType) }},
         resolve: (_, {id, sensors}) => {
           if (0 <= id && id < model.devices.length) {
@@ -109,8 +120,9 @@ const schema = new GraphQLSchema({
             device.humidity = sensors.humidity;
             device.airQuality = sensors.airQuality;
             device.deferedEval();
-            return device;
+            return {success: true};
           }
+          return {success: false};
         }
       }
     }

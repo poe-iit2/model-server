@@ -1,4 +1,4 @@
-import { GraphQLSchema, GraphQLString, GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLBoolean, GraphQLFloat, GraphQLEnumType } from 'graphql';
+import { GraphQLSchema, GraphQLString, GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLBoolean, GraphQLFloat, GraphQLEnumType, GraphQLInputObjectType } from 'graphql';
 import { model, EVACStates, LEDStates } from './model.mjs';
 
 const EVACStatesType = new GraphQLEnumType({
@@ -47,6 +47,24 @@ const DeviceType = new GraphQLObjectType({
   }
 });
 
+const DeviceSensorsType = new GraphQLInputObjectType({
+  name: 'DeviceSensors',
+  fields: {
+    occupied: {
+      type: GraphQLBoolean,
+    },
+    temperature: {
+      type: GraphQLFloat,
+    },
+    humidity: {
+      type: GraphQLFloat,
+    },
+    airQuality: {
+      type: GraphQLFloat,
+    }
+  }
+});
+
 const ModelType = new GraphQLObjectType({
   name: 'Model',
   fields: {
@@ -73,7 +91,27 @@ const schema = new GraphQLSchema({
       },
       model: {
         type: new GraphQLNonNull(ModelType),
-        resolve: () => model
+        resolve: () => model,
+      }
+    }
+  }),
+  mutation: new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+      updateSensors: {
+        type: DeviceType,
+        args: {id: { type: new GraphQLNonNull(GraphQLInt) }, sensors: { type: new GraphQLNonNull(DeviceSensorsType) }},
+        resolve: (_, {id, sensors}) => {
+          if (0 <= id && id < model.devices.length) {
+            let device = model.devices[id];
+            device.occupied = sensors.occupied;
+            device.temperature = sensors.temperature;
+            device.humidity = sensors.humidity;
+            device.airQuality = sensors.airQuality;
+            device.deferedEval();
+            return device;
+          }
+        }
       }
     }
   }),

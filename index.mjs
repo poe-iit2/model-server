@@ -4,6 +4,7 @@ import { WebSocketServer } from 'ws';
 import { ruruHTML } from 'ruru/server';
 import { useServer } from "graphql-ws/use/ws";
 import schema from './schema.mjs'
+import { printSchema } from 'graphql';
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get('/', (_req, res) => {
 });
 
 const server = await app.listen(process.env.PORT || 5000);
+console.log(printSchema(schema));
 console.log(server.address());
 
 const wsServer = new WebSocketServer({server, path: '/'});

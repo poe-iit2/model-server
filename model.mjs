@@ -26,10 +26,10 @@ export class Device extends EventEmitter {
     }
 
     evalLedState() {
-        let ledState = this.occupied ? evacState : LEDStates.OFF;
+        let ledState = this.occupied ? this.evacState : LEDStates.OFF;
         let needsUpdate = ledState != this.ledState;
         this.ledState = ledState;
-        if (needsUpdate) this.ledStatesChanged();
+        if (needsUpdate) this.ledStateChanged();
     }
 
     ledStateChanged() {
@@ -53,6 +53,11 @@ export class Device extends EventEmitter {
 
     setAirQuality(airQuality) {
         this.airQuality = airQuality;
+        this.evalDanger();
+    }
+
+    deferedEval() {
+        this.evalLedState();
         this.evalDanger();
     }
 

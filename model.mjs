@@ -36,29 +36,10 @@ export class Device extends EventEmitter {
         this.emit('ledStateChanged', { data: this.ledState });
     }
 
-    setOccupied(occupied) {
-        this.occupied = occupied;
-        this.evalLedState();
-    }
-
-    setTemperature(temperature) {
-        this.temperature = temperature;
-        this.evalDanger();
-    }
-
-    setHumidity(humidity) {
-        this.humidity = humidity;
-        this.evalDanger();
-    }
-
-    setAirQuality(airQuality) {
-        this.airQuality = airQuality;
-        this.evalDanger();
-    }
-
     deferedEval() {
         this.evalLedState();
         this.evalDanger();
+        this.emit('deviceChanged');
     }
 
     evalDanger() {

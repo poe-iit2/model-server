@@ -96,10 +96,6 @@ const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'Query',
     fields: {
-      hello: {
-        type: GraphQLString,
-        resolve: () => 'world',
-      },
       model: {
         type: new GraphQLNonNull(ModelType),
         resolve: () => model,
@@ -132,6 +128,7 @@ const schema = new GraphQLSchema({
     fields: {
       greetings: {
         type: GraphQLString,
+        description: "greetings is for example purposes only.",
         subscribe: async function* () {
           for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
             yield { greetings: hi };

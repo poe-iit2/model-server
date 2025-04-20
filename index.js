@@ -2,7 +2,7 @@ import express from 'express';
 import { createHandler } from 'graphql-http/lib/use/express';
 import { WebSocketServer } from 'ws';
 import { useServer } from "graphql-ws/use/ws";
-import schema from './schema.mjs'
+import schema from './schema.js'
 import { printSchema } from 'graphql';
 import process from 'node:process';
 
@@ -23,7 +23,7 @@ if (process.env.NODE_ENV != 'production')
     res.end(ruruHTML({ endpoint: '/graphql', subscriptionEndpoint: '/' }));
   });
 
-const server = await app.listen(process.env.PORT || 5000);
+const server = await app.listen(process.env.PORT || 5000, '0.0.0.0');
 console.log(printSchema(schema));
 console.log(server.address());
 

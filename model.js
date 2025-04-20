@@ -33,13 +33,13 @@ export class Device extends EventEmitter {
     }
 
     ledStateChanged() {
-        this.emit('ledStateChanged', { data: this.ledState });
+        this.emit('ledStateChanged', this.ledState);
     }
 
     deferedEval() {
         this.evalLedState();
         this.evalDanger();
-        this.emit('deviceChanged');
+        this.emit('deviceChanged', this);
     }
 
     evalDanger() {

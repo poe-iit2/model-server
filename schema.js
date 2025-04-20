@@ -1,5 +1,6 @@
 import { GraphQLSchema, GraphQLString, GraphQLObjectType, GraphQLInt, GraphQLNonNull, GraphQLBoolean, GraphQLFloat, GraphQLEnumType, GraphQLInputObjectType } from 'graphql';
-import { model, EVACStates, LEDStates } from './model.mjs';
+import { model, EVACStates, LEDStates } from './model.js';
+import { PubSub } from 'graphql-subscriptions';
 
 const EVACStatesType = new GraphQLEnumType({
   name: "EVACStates",
@@ -136,6 +137,28 @@ const schema = new GraphQLSchema({
           }
         },
       },
+      deviceChanged: {
+        type: DeviceType,
+        args: { id: { type: new GraphQLNonNull(GraphQLInt) }},
+        resolve: obj => obj,
+        subscribe: (_, {id}) => {
+          if (0 <= id && id < model.devices.length) {
+            let pubsub = new PubSub({eventEmitter: model.devices[id]});
+            return pubsub.asyncIterableIterator("deviceChanged");
+          }
+        }
+      },
+      ledStateChanged: {
+        type: LEDStatesType,
+        args: { id: { type: new GraphQLNonNull(GraphQLInt) }},
+        resolve: obj => obj,
+        subscribe: (_, {id}) => {
+          if (0 <= id && id < model.devices.length) {
+            let pubsub = new PubSub({eventEmitter: model.devices[id]});
+            return pubsub.asyncIterableIterator("ledStateChanged");
+          }
+        }
+      }
     },
   }),
 });

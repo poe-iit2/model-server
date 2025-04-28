@@ -6,8 +6,7 @@ const EVACStatesType = new GraphQLEnumType({
   name: "EVACStates",
   values: {
     NORMAL: { value: EVACStates.NORMAL },
-    LEFT: { value: EVACStates.LEFT },
-    RIGHT: { value: EVACStates.RIGHT },
+    EVAC: { value: EVACStates.EVAC },
   }
 })
 
@@ -15,9 +14,9 @@ const LEDStatesType = new GraphQLEnumType({
   name: "LEDStates",
   values: {
     OFF: { value: LEDStates.OFF },
-    NORMAL: { value: LEDStates.NORMAL },
-    LEFT: { value: LEDStates.LEFT },
-    RIGHT: { value: LEDStates.RIGHT },
+    SAFE: { value: LEDStates.SAFE },
+    EVAC_OCCUPIED: { value: LEDStates.EVAC_OCCUPIED },
+    EVAC_UNOCCUPIED: { value: LEDStates.EVAC_UNOCCUPIED },
   }
 })
 

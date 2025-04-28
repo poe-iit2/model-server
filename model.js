@@ -2,13 +2,14 @@ import { EventEmitter } from 'node:events';
 
 export const EVACStates = Object.freeze({
     NORMAL: "normal",
-    LEFT: "left",
-    RIGHT: "right"
+    EVAC: "evac"
 });
 
 export const LEDStates = Object.freeze({
-    OFF: "off",
-    ...EVACStates,
+    EVAC_OCCUPIED: "evac_occupied",
+    EVAC_UNOCCUPIED: "evac_unoccupied",
+    SAFE: "safe",
+    OFF: "off"
 });
 
 export class Device extends EventEmitter {
@@ -26,7 +27,13 @@ export class Device extends EventEmitter {
     }
 
     evalLedState() {
-        let ledState = this.occupied ? this.evacState : LEDStates.OFF;
+        let ledState = this.evacState == EVACStates.EVAC
+                       ? (this.occupied
+                          ? LEDStates.EVAC_OCCUPIED
+                          : LEDStates.EVAC_UNOCCUPIED)
+                       : (this.occupied
+                          ? LEDStates.SAFE
+                          : LEDStates.OFF);
         let needsUpdate = ledState != this.ledState;
         this.ledState = ledState;
         if (needsUpdate) this.ledStateChanged();
@@ -57,8 +64,8 @@ export const model = {
 function updateGraph() {
     let danger = model.devices[0].danger || model.devices[1].danger;
     if (danger) {
-        model.devices[0].setEvacState(EVACStates.RIGHT);
-        model.devices[1].setEvacState(EVACStates.LEFT);
+        model.devices[0].setEvacState(EVACStates.EVAC);
+        model.devices[1].setEvacState(EVACStates.EVAC);
     } else {
         model.devices[0].setEvacState(EVACStates.NORMAL);
         model.devices[1].setEvacState(EVACStates.NORMAL);

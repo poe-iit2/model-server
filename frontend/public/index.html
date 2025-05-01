@@ -1,14 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Device Monitoring System" />
-    <title>Device Monitor</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <!-- Web UI: Displays real-time room monitoring status -->
+  <!-- Future Implementation: Live refresh toggle and Web Notification integration planned -->
+  <title>Soteria Room Monitoring Status</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="menu-icon">&#9776;</div>
+      <h1>Soteria Room Monitoring Status</h1>
+    </div>
+<!-- Room Monitoring Section: Each room card displays live sensor monitoring mockup -->
+    <div class="rooms">
+<!-- Room 1 Card: Sample room card displaying important sensor parameters -->
+      <div class="room-card alert">
+        <h2>Room 1</h2>
+        <div class="status alert-text"><img src="frontend/UI_Icons/Red_Alert_Icon.png" width="5px"> ALERT</div>
+        <div class="info">
+          <p>Smoke Detected: <strong>Yes</strong></p>
+          <p><img src="frontend/UI_Icons/People_Count_Icon.png"" width="20px"> People Count: 3</p>
+          <p><img src="frontend/UI_Icons/Temperature_Icon.png" width="10px"> Temperature: 93°F</p>
+          <p><img src="frontend/UI_Icons/Humidity_Icon.png" width="10px"> Humidity: 75%</p>
+          <p><img src="frontend/UI_Icons/Emergency_Door_Icon.png" width="20px"> Emergency Exits: 2</p>
+        </div>
+      </div>
+<!-- Room 2 Card: Example Normal Room Status -->
+      <div class="room-card normal">
+        <h2>Room 2</h2>
+        <div class="status normal-text"><img src="frontend/UI_Icons/Green_Alert_Icon.png" width="5px">  NORMAL</div>
+        <div class="info">
+          <p>Smoke Detected: <strong>No</strong></p>
+          <p><img src="frontend/UI_Icons/People_Count_Icon.png" width="20px"> People Count: 5</p>
+          <p><img src="frontend/UI_Icons/Temperature_Icon.png" width="10px"> Temperature: 63°F</p>
+          <p><img src="frontend/UI_Icons/Humidity_Icon.png" width="10px"> Humidity: 55%</p>
+          <p><img src="frontend/UI_Icons/Emergency_Door_Icon.png" width="20px"> Emergency Exits: 1</p>
+        </div>
+      </div>
+    </div>
+<!-- Add Room Dynamically Section -->
+    <div class="add-room">
+      <button> + Add New Room</button>
+    </div>
+  </div>
+</body>
 </html>

@@ -44,6 +44,9 @@ const DeviceType = new GraphQLObjectType({
     evacState: {
       type: new GraphQLNonNull(EVACStatesType),
     },
+    smokeDetected: {
+      type: GraphQLBoolean,
+    }
   }
 });
 
@@ -61,6 +64,9 @@ const DeviceSensorsType = new GraphQLInputObjectType({
     },
     airQuality: {
       type: GraphQLFloat,
+    },
+    smokeDetected: {
+      type: GraphQLBoolean,
     }
   }
 });
@@ -115,6 +121,7 @@ const schema = new GraphQLSchema({
             device.temperature = sensors.temperature;
             device.humidity = sensors.humidity;
             device.airQuality = sensors.airQuality;
+            device.smokeDetected = sensors.smokeDetected;
             device.deferedEval();
             return {success: true};
           }

@@ -20,6 +20,7 @@ export class Device extends EventEmitter {
     airQuality = null;
     ledState = LEDStates.OFF;
     evacState = EVACStates.NORMAL;
+    smokeDetected = null;
 
     setEvacState(evacState) {
         this.evacState = evacState;

@@ -46,6 +46,12 @@ const DeviceType = new GraphQLObjectType({
     },
     smokeDetected: {
       type: GraphQLBoolean,
+    },
+    forcedOccupancy: {
+      type: GraphQLBoolean,
+    },
+    forcedDanger: {
+      type: GraphQLBoolean,
     }
   }
 });
@@ -122,6 +128,32 @@ const schema = new GraphQLSchema({
             device.humidity = sensors.humidity;
             device.airQuality = sensors.airQuality;
             device.smokeDetected = sensors.smokeDetected;
+            device.deferedEval();
+            return {success: true};
+          }
+          return {success: false};
+        }
+      },
+      forceOccupancy: {
+        type: MutationReturnType,
+        args: {id: { type: new GraphQLNonNull(GraphQLInt) }, value: {type: GraphQLBoolean}},
+        resolve: (_, {id, value}) => {
+          if (0 <= id && id < model.devices.length) {
+            let device = model.devices[id];
+            device.forcedOccupancy = value;
+            device.deferedEval();
+            return {success: true};
+          }
+          return {success: false};
+        }
+      },
+      forceDanger: {
+        type: MutationReturnType,
+        args: {id: { type: new GraphQLNonNull(GraphQLInt) }, value: {type: GraphQLBoolean}},
+        resolve: (_, {id, value}) => {
+          if (0 <= id && id < model.devices.length) {
+            let device = model.devices[id];
+            device.forcedDanger = value;
             device.deferedEval();
             return {success: true};
           }

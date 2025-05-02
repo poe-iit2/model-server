@@ -21,6 +21,8 @@ export class Device extends EventEmitter {
     ledState = LEDStates.OFF;
     evacState = EVACStates.NORMAL;
     smokeDetected = null;
+    forcedDanger = null;
+    forcedOccupancy = null;
 
     setEvacState(evacState) {
         this.evacState = evacState;
@@ -45,13 +47,19 @@ export class Device extends EventEmitter {
     }
 
     deferedEval() {
+        if (this.forcedOccupancy != null) {
+            this.occupied = this.forcedOccupancy;
+        }
         this.evalLedState();
         this.evalDanger();
         this.emit('deviceChanged', this);
     }
 
     evalDanger() {
-        let danger = (this.temperature > 100);
+        let danger = !!(this.temperature > 100 || this.smokeDetected);
+        if (this.forcedDanger !== null) {
+            danger = this.forcedDanger;
+        }
         let needsUpdate = danger != this.danger;
         this.danger = danger;
         if (needsUpdate) updateGraph();

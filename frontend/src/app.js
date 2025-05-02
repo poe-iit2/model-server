@@ -13,7 +13,7 @@ const httpLink = new HttpLink({
 // Create a WebSocket link for subscriptions
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: `ws://${window.location.host}/`,
+    url: `ws://${window.location.host}/graphqlws`,
   }),
 );
 
@@ -39,14 +39,20 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
-      <div className="App">
-        <header>
-          <h1>Device Monitoring System</h1>
-        </header>
-        <main>
-          <DeviceMonitor deviceId={0} />
-          <DeviceMonitor deviceId={1} />
-        </main>
+      <div className="container">
+            <div className="header">
+              <div className="menu-icon">&#9776;</div>
+              <h1>Soteria Room Monitoring Status</h1>
+            </div>
+            <div className="rooms">
+
+              <DeviceMonitor deviceId={0} />
+              <DeviceMonitor deviceId={1} />
+            </div>  
+          {/* <!-- Add Room Dynamically Section --> */}
+          <div className  ="add-room">
+            <button> + Add New Room</button>
+          </div>  ` `
       </div>
     </ApolloProvider>
   );

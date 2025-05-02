@@ -12,16 +12,48 @@ const GET_DEVICE = gql`
         airQuality
         ledState
         evacState
+        smokeDetected
       }
     }
   }
 `;
 
+const SUB_DEVICE = gql`
+  subscription MySubscription($id: Int!) {
+    deviceChanged(id: $id) {
+      danger
+      occupied
+      temperature
+      humidity
+      airQuality
+      ledState
+      evacState
+      smokeDetected
+    }
+  }
+`;
+
 function DeviceMonitor({ deviceId }) {
-  const { loading, error, data } = useQuery(GET_DEVICE, {
+  const { loading, error, data, subscribeToMore } = useQuery(GET_DEVICE, {
     variables: { id: deviceId },
-    pollInterval: 1000, // Poll every second for updates
+    // pollInterval: 1000, // Poll every second for updates
   });
+
+  React.useEffect(() => {
+    const unsubscribe = subscribeToMore({
+      document: SUB_DEVICE,
+      variables: { id: deviceId },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev;
+
+        return Object.assign({}, prev, {model: {getDevice: subscriptionData.data.deviceChanged}});
+      },
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [deviceId, subscribeToMore]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -30,7 +62,21 @@ function DeviceMonitor({ deviceId }) {
   if (!device) return <p>Device {deviceId} not found</p>;
 
   return (
-    <div className="device-monitor">
+    <div className="room-card alert">
+        <h2>Room {deviceId+1}</h2>
+        { device.danger
+            ? <div className="status alert-text"><img src="../UI_Icons/Red_Alert_Icon.png" width="5px"/> ALERT</div>
+            : <div className="status normal-text"><img src="../UI_Icons/Green_Alert_Icon.png" width="5px"/>  NORMAL</div>}
+        
+        <div className="info">
+          <p>Smoke Detected: <strong>{device.smokeDetected === null ? 'Unknown' : device.smokeDetected ? 'Yes' : 'No'}</strong></p>
+          <p><img src="../UI_Icons/People_Count_Icon.png" width="20px"/> Occupied: {device.occupied === null ? 'Unknown' : device.occupied ? 'Yes' : 'No'}</p>
+          <p><img src="../UI_Icons/Temperature_Icon.png" width="10px"/> Temperature: {device.temperature !== null ? `${device.temperature}°C` : 'N/A'}</p>
+          <p><img src="../UI_Icons/Humidity_Icon.png" width="10px"/> Humidity: {device.humidity !== null ? `${device.humidity}%` : 'N/A'}</p>
+          <p><img src="../UI_Icons/Emergency_Door_Icon.png" width="20px"/> State: <span className={`evac-state ${device.evacState}`}>{device.evacState === 'EVAC' ? 'Evacuating' : "Safe"}</span></p>
+        </div>
+      </div>
+    /* <div className="device-monitor">
       <h2>Device {deviceId}</h2>
       <div className={`status ${device.danger ? 'danger' : 'normal'}`}>
         {device.danger ? '⚠️ DANGER' : '✓ Normal'}
@@ -69,7 +115,7 @@ function DeviceMonitor({ deviceId }) {
           <span className={`evac-state ${device.evacState}`}>{device.evacState}</span>
         </div>
       </div>
-    </div>
+    </div> */
   );
 }
 

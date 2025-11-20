@@ -36,6 +36,8 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const device_count = 4
+
 function App() {
   return (
     <ApolloProvider client={client}>
@@ -45,9 +47,7 @@ function App() {
               <h1>Soteria Room Monitoring Status</h1>
             </div>
             <div className="rooms">
-
-              <DeviceMonitor deviceId={0} />
-              <DeviceMonitor deviceId={1} />
+              {Array.from({length: device_count}).map(i => <DeviceMonitor deviceId={i} />)}
             </div>  
           {/* <!-- Add Room Dynamically Section --> */}
           <div className  ="add-room">

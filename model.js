@@ -66,17 +66,17 @@ export class Device extends EventEmitter {
     }
 }
 
+const device_count = process.env.DEVICE_COUNT ? Number.parseInt(process.env.DEVICE_COUNT) : 4
+
 export const model = {
-    devices: [new Device(), new Device()],
+    devices: Array.from({length: device_count}).map(_ => new Device()),
 }
 
 function updateGraph() {
-    let danger = model.devices[0].danger || model.devices[1].danger;
+    let danger = model.devices.find(d => d.danger) !== undefined;
     if (danger) {
-        model.devices[0].setEvacState(EVACStates.EVAC);
-        model.devices[1].setEvacState(EVACStates.EVAC);
+        model.devices.forEach(device => device.setEvacState(EVACStates.EVAC));
     } else {
-        model.devices[0].setEvacState(EVACStates.NORMAL);
-        model.devices[1].setEvacState(EVACStates.NORMAL);
+        model.devices.forEach(device => device.setEvacState(EVACStates.NORMAL));
     }
 }

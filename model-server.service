@@ -1,0 +1,6 @@
+[Service]
+Type=simple
+ExecStart=/usr/bin/node /opt/model-server/index.js
+
+[Install]
+WantedBy=multi-user.target

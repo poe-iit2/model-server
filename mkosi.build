@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [ "$container" != "mkosi" ]; then
+    exec mkosi-chroot "$CHROOT_SCRIPT" "$@"
+fi
+
+BINDIR=$DESTDIR/opt/model-server
+SERVICEDIR=$DESTDIR/etc/systemd/system/
+mkdir -p $BINDIR
+mkdir -p $SERVICEDIR
+cp $SRCDIR/*.js $BINDIR
+cp $SRCDIR/package.json $SRCDIR/package-lock.json $BINDIR
+cp $SRCDIR/model-server.service $SERVICEDIR
+cd $BINDIR
+npm install

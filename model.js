@@ -6,8 +6,9 @@ export const EVACStates = Object.freeze({
 });
 
 export const LEDStates = Object.freeze({
-    EVAC_OCCUPIED: "evac_occupied",
-    EVAC_UNOCCUPIED: "evac_unoccupied",
+    EVAC_LEFT: "evac_left",
+    EVAC_RIGHT: "evac_right",
+    DANGER: "danger",
     SAFE: "safe",
     OFF: "off"
 });
@@ -18,7 +19,7 @@ export class Device extends EventEmitter {
     temperature = null;
     humidity = null;
     airQuality = null;
-    ledState = LEDStates.OFF;
+    ledState = LEDStates.SAFE;
     evacState = EVACStates.NORMAL;
     smokeDetected = null;
     forcedDanger = null;
@@ -26,17 +27,9 @@ export class Device extends EventEmitter {
 
     setEvacState(evacState) {
         this.evacState = evacState;
-        this.evalLedState();
     }
 
-    evalLedState() {
-        let ledState = this.evacState == EVACStates.EVAC
-                       ? (this.occupied
-                          ? LEDStates.EVAC_OCCUPIED
-                          : LEDStates.EVAC_UNOCCUPIED)
-                       : (this.occupied
-                          ? LEDStates.SAFE
-                          : LEDStates.OFF);
+    setLedState(ledState) {
         let needsUpdate = ledState != this.ledState;
         this.ledState = ledState;
         if (needsUpdate) this.ledStateChanged();
@@ -50,7 +43,6 @@ export class Device extends EventEmitter {
         if (this.forcedOccupancy != null) {
             this.occupied = this.forcedOccupancy;
         }
-        this.evalLedState();
         this.evalDanger();
         this.emit('deviceChanged', this);
     }
@@ -75,8 +67,14 @@ export const model = {
 function updateGraph() {
     let danger = model.devices.find(d => d.danger) !== undefined;
     if (danger) {
+        let minDanger = model.devices.find(d => d.danger);
+        let maxDanger = model.devices.findLast(d => d.danger);
+        model.devices.slice(0, minDanger).forEach(device => device.setLedState(LEDStates.EVAC_LEFT));
+        model.devices.slice(minDanger, maxDanger).forEach(device => device.setLedState(LEDStates.DANGER));
+        model.devices.slice(maxDanger).forEach(device => device.setLedState(LEDStates.EVAC_RIGHT));
         model.devices.forEach(device => device.setEvacState(EVACStates.EVAC));
     } else {
+        model.devices.forEach(device => device.setLedState(LEDStates.SAFE));
         model.devices.forEach(device => device.setEvacState(EVACStates.NORMAL));
     }
 }

@@ -47,7 +47,7 @@ function App() {
               <h1>Soteria Room Monitoring Status</h1>
             </div>
             <div className="rooms">
-              {Array.from({length: device_count}).map(i => <DeviceMonitor deviceId={i} />)}
+              {[...Array.from({length: device_count}).keys()].map(i => <DeviceMonitor deviceId={i} key={i}/>)}
             </div>  
           {/* <!-- Add Room Dynamically Section --> */}
           <div className  ="add-room">

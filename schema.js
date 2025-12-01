@@ -15,8 +15,9 @@ const LEDStatesType = new GraphQLEnumType({
   values: {
     OFF: { value: LEDStates.OFF },
     SAFE: { value: LEDStates.SAFE },
-    EVAC_OCCUPIED: { value: LEDStates.EVAC_OCCUPIED },
-    EVAC_UNOCCUPIED: { value: LEDStates.EVAC_UNOCCUPIED },
+    EVAC_LEFT: { value: LEDStates.EVAC_LEFT },
+    EVAC_RIGHT: { value: LEDStates.EVAC_RIGHT },
+    DANGER: { value: LEDStates.DANGER },
   }
 })
 

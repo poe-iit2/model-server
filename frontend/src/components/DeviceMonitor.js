@@ -45,8 +45,7 @@ function DeviceMonitor({ deviceId }) {
       variables: { id: deviceId },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev;
-
-        return Object.assign({}, prev, {model: {getDevice: subscriptionData.data.deviceChanged}});
+        return Object.assign({}, prev, {model: Object.assign({}, prev.model, {getDevice: subscriptionData.data.deviceChanged})});
       },
     });
 

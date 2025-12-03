@@ -33,7 +33,13 @@ const splitLink = split(
 // Create Apollo Client
 const client = new ApolloClient({
   link: splitLink,
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Model: {
+        keyFields: [] // Singleton
+      }
+    }
+  }),
 });
 
 const device_count = 4

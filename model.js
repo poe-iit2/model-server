@@ -67,11 +67,11 @@ export const model = {
 function updateGraph() {
     let danger = model.devices.find(d => d.danger) !== undefined;
     if (danger) {
-        let minDanger = model.devices.find(d => d.danger);
-        let maxDanger = model.devices.findLast(d => d.danger);
+        let minDanger = model.devices.findIndex(d => d.danger);
+        let maxDanger = model.devices.findLastIndex(d => d.danger);
         model.devices.slice(0, minDanger).forEach(device => device.setLedState(LEDStates.EVAC_LEFT));
-        model.devices.slice(minDanger, maxDanger).forEach(device => device.setLedState(LEDStates.DANGER));
-        model.devices.slice(maxDanger).forEach(device => device.setLedState(LEDStates.EVAC_RIGHT));
+        model.devices.slice(minDanger, maxDanger+1).forEach(device => device.setLedState(LEDStates.DANGER));
+        model.devices.slice(maxDanger+1).forEach(device => device.setLedState(LEDStates.EVAC_RIGHT));
         model.devices.forEach(device => device.setEvacState(EVACStates.EVAC));
     } else {
         model.devices.forEach(device => device.setLedState(LEDStates.SAFE));
